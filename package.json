@@ -1,0 +1,28 @@
+{
+  "name": "urls",
+  "version": "1.0.0",
+  "description": "urls",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/consultoriakicandi-web/urls.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/consultoriakicandi-web/urls/issues"
+  },
+  "homepage": "https://github.com/consultoriakicandi-web/urls#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "jest": "^30.4.2",
+    "supertest": "^7.2.2"
+  }
+}
