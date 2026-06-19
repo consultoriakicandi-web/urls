@@ -1,0 +1,9 @@
+<!-- Exemplo de botão de login -->
+<a href="https://tiktok.com
+  ?client_key=SEU_CLIENT_KEY
+  &response_type=code
+  &redirect_uri=https://seusite.com
+  &scope=user.info.basic,video.list
+  &state=qualquer_string_aleatoria">
+  Entrar com TikTok
+</a>
