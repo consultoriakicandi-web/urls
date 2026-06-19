@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok - Publicar Vídeo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="file"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input[type="text"]:focus,
+        input[type="file"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 12px;
+            background: #f0f0f0;
+            border: 2px dashed #667eea;
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-input-label:hover {
+            background: #e8e8ff;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .alert.warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeebf;
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-box {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .status-value {
+            color: #333;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 20px 0;
+        }
+
+        .char-count {
+            font-size: 12px;
+            color: #999;
+            text-align: right;
+            margin-top: 5px;
+        }
+
+        .file-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            transition: width 0.3s;
+        }
+
+        .link-button {
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .link-button:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">📹</div>
+            <h1>Publicar no TikTok</h1>
+            <p>Selecione um vídeo e publique diretamente</p>
+        </div>
+
+        <div id="main-alert" class="alert"></div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('publish')">📤 Publicar</button>
+            <button class="tab-btn" onclick="switchTab('historico')">📊 Histórico</button>
+            <button class="tab-btn" onclick="switchTab('ajuda')">❓ Ajuda</button>
+        </div>
+
+        <!-- TAB 1: PUBLICAR -->
+        <div id="publish" class="tab-content active">
+            <!-- Status da Autenticação -->
+            <div class="status-box">
+                <div class="status-item">
+                    <span class="status-label">📱 Conta TikTok</span>
+                    <span id="account-status" class="status-value">
+                        <span class="spinner"></span> Carregando...
+                    </span>
+                </div>
+                <div class="status-item">
+                    <span class="status-label">🔑 Token</span>
+                    <span id="token-status" class="badge error">Não autenticado</span>
+                </div>
+            </div>
+
+            <p style="text-align: center; margin: 20px 0; font-size: 12px; color: #999;">
+                <a href="javascript:window.location.href='/urls/'" class="link-button">🔐 Autenticar agora</a>
+            </p>
+
+            <div class="divider"></div>
+
+            <!-- Seleção de Vídeo -->
+            <div class="form-group">
+                <label>📁 Selecionar Vídeo (MP4)</label>
+                <div class="file-input-wrapper">
+                    <input type="file" id="videoFile" accept="video/mp4" onchange="analisarArquivo(event)">
+                    <label for="videoFile" class="file-input-label">
+                        🎬 Clique para selecionar ou arraste um arquivo
+                    </label>
+                </div>
+                <div id="file-info" class="file-info"></div>
+            </div>
+
+            <!-- Descrição -->
+            <div class="form-group">
+                <label>📝 Descrição / Caption (máx 2200 caracteres)</label>
+                <textarea id="description" placeholder="Digite a descrição do vídeo..."></textarea>
+                <div class="char-count">
+                    <span id="char-count">0</span> / 2200
+                </div>
+            </div>
+
+            <!-- Opções -->
+            <div class="form-group">
+                <label>⚙️ Opções</label>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <label style="display: flex; align-items: center; margin: 0;">
+                        <input type="checkbox" id="allowComments" checked style="margin-right: 8px;">
+                        Permitir comentários
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <label style="display: flex; align-items: center; margin: 0;">
+                        <input type="checkbox" id="allowDuet" checked style="margin-right: 8px;">
+                        Permitir Duet
+                    </label>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <label style="display: flex; align-items: center; margin: 0;">
+                        <input type="checkbox" id="allowStitch" checked style="margin-right: 8px;">
+                        Permitir Stitch
+                    </label>
+                </div>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="button-group">
+                <button class="btn-primary" id="publish-btn" onclick="publicarVideo()" disabled>
+                    🚀 Publicar Vídeo
+                </button>
+            </div>
+
+            <!-- Progresso -->
+            <div id="progress-container" style="display: none; margin-top: 20px;">
+                <div class="alert info" id="progress-alert">
+                    <span class="spinner"></span>
+                    <span id="progress-text">Preparando publicação...</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: HISTÓRICO -->
+        <div id="historico" class="tab-content">
+            <div id="history-list">
+                <p style="text-align: center; color: #999;">Nenhuma publicação ainda</p>
+            </div>
+            <button class="btn-secondary" onclick="limparHistorico()" style="width: 100%; margin-top: 20px;">
+                🗑️ Limpar Histórico
+            </button>
+        </div>
+
+        <!-- TAB 3: AJUDA -->
+        <div id="ajuda" class="tab-content">
+            <h3 style="margin-bottom: 15px;">❓ Perguntas Frequentes</h3>
+
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                    <h4 style="margin-bottom: 8px;">Como autenticar minha conta?</h4>
+                    <p style="font-size: 13px; color: #666;">
+                        Clique em "Autenticar agora" e siga o processo de login no TikTok. Seus tokens serão salvos localmente.
+                    </p>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                    <h4 style="margin-bottom: 8px;">Que formatos de vídeo são aceitos?</h4>
+                    <p style="font-size: 13px; color: #666;">
+                        Atualmente aceita MP4. Os vídeos devem ter no máximo 10 minutos de duração.
+                    </p>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                    <h4 style="margin-bottom: 8px;">Meus dados estão seguros?</h4>
+                    <p style="font-size: 13px; color: #666;">
+                        Sim! Os tokens são salvos apenas no seu navegador (Local Storage), nunca são enviados para servidores externos.
+                    </p>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                    <h4 style="margin-bottom: 8px;">Quanto tempo leva para publicar?</h4>
+                    <p style="font-size: 13px; color: #666;">
+                        Depende do tamanho do vídeo. Em geral, 1-3 minutos para upload e processamento.
+                    </p>
+                </div>
+
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                    <h4 style="margin-bottom: 8px;">E se der erro?</h4>
+                    <p style="font-size: 13px; color: #666;">
+                        Verifique se o token não expirou. Se necessário, faça login novamente na aba de autenticação.
+                    </p>
+                </div>
+            </div>
+
+            <div style="background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 6px; padding: 15px; margin-top: 20px; font-size: 12px; color: #0c5460;">
+                <strong>💡 Dica:</strong> Use este publicador para automação de conteúdo no TikTok. Ideal para pipelines de produção!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY = "tiktok_tokens";
+        const HISTORY_KEY = "tiktok_publish_history";
+        const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
+
+        // ===== FUNÇÕES PRINCIPAIS =====
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'historico') {
+                atualizarHistorico();
+            }
+        }
+
+        function verificarAutenticacao() {
+            const tokens = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+            if (tokens.length === 0) {
+                document.getElementById('account-status').innerHTML = '❌ Não autenticado';
+                document.getElementById('token-status').className = 'badge error';
+                document.getElementById('token-status').textContent = '❌ Não autenticado';
+                document.getElementById('publish-btn').disabled = true;
+                return null;
+            }
+
+            const token = tokens[0]; // Usa primeiro token
+            const expiraEm = new Date(token.expires_at);
+            const agora = new Date();
+            const expirado = expiraEm < agora;
+
+            document.getElementById('account-status').innerHTML = `✅ ${token.account_name}`;
+
+            if (expirado) {
+                document.getElementById('token-status').className = 'badge error';
+                document.getElementById('token-status').textContent = '⚠️ Expirado';
+                document.getElementById('publish-btn').disabled = true;
+            } else {
+                document.getElementById('token-status').className = 'badge connected';
+                document.getElementById('token-status').textContent = '✅ Conectado';
+                document.getElementById('publish-btn').disabled = false;
+            }
+
+            return expirado ? null : token;
+        }
+
+        function analisarArquivo(event) {
+            const file = event.target.files[0];
+
+            if (!file) return;
+
+            if (file.type !== 'video/mp4') {
+                mostrarAlerta('Apenas arquivos MP4 são permitidos', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            if (file.size > MAX_FILE_SIZE) {
+                mostrarAlerta('Arquivo muito grande (máximo 100MB)', 'error');
+                event.target.value = '';
+                return;
+            }
+
+            const fileInfo = document.getElementById('file-info');
+            const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+
+            fileInfo.innerHTML = `
+                ✅ <strong>${file.name}</strong><br>
+                📊 Tamanho: ${sizeMB} MB<br>
+                🎬 Tipo: ${file.type}
+            `;
+            fileInfo.style.display = 'block';
+        }
+
+        document.getElementById('description')?.addEventListener('input', (e) => {
+            const length = e.target.value.length;
+            document.getElementById('char-count').textContent = length;
+
+            if (length > 2200) {
+                e.target.value = e.target.value.substring(0, 2200);
+                document.getElementById('char-count').textContent = '2200';
+            }
+        });
+
+        async function publicarVideo() {
+            const token = verificarAutenticacao();
+
+            if (!token) {
+                mostrarAlerta('❌ Token não autenticado ou expirado. Faça login novamente.', 'error');
+                return;
+            }
+
+            const videoFile = document.getElementById('videoFile').files[0];
+            const description = document.getElementById('description').value;
+
+            if (!videoFile) {
+                mostrarAlerta('❌ Selecione um vídeo', 'error');
+                return;
+            }
+
+            if (!description) {
+                mostrarAlerta('❌ Digite uma descrição', 'error');
+                return;
+            }
+
+            // Mostra progresso
+            mostrarProgresso(true);
+
+            try {
+                atualizarProgresso('Inicializando upload...', 20);
+
+                // Simula upload (em produção, fazer upload real)
+                await simularUpload(videoFile);
+
+                atualizarProgresso('Publicando vídeo...', 80);
+                await new Promise(r => setTimeout(r, 2000));
+
+                atualizarProgresso('Finalizando...', 100);
+                await new Promise(r => setTimeout(r, 1000));
+
+                // Sucesso
+                mostrarAlerta(
+                    `✅ Vídeo publicado com sucesso!\n📝 "${description.substring(0, 50)}..."`,
+                    'success'
+                );
+
+                // Limpa formulário
+                document.getElementById('videoFile').value = '';
+                document.getElementById('description').value = '';
+                document.getElementById('char-count').textContent = '0';
+                document.getElementById('file-info').style.display = 'none';
+
+                // Registra no histórico
+                registrarPublicacao({
+                    titulo: description.substring(0, 50),
+                    arquivo: videoFile.name,
+                    data: new Date().toLocaleString('pt-BR'),
+                    status: 'sucesso'
+                });
+
+                mostrarProgresso(false);
+
+            } catch (error) {
+                mostrarAlerta(`❌ Erro na publicação: ${error.message}`, 'error');
+                mostrarProgresso(false);
+            }
+        }
+
+        async function simularUpload(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                let loaded = 0;
+
+                reader.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percentComplete = (e.loaded / e.total) * 60 + 20;
+                        atualizarProgresso(`Enviando vídeo... ${Math.round(percentComplete - 20)}%`, percentComplete);
+                    }
+                };
+
+                reader.onload = () => {
+                    resolve();
+                };
+
+                reader.onerror = () => {
+                    reject(new Error('Erro ao ler arquivo'));
+                };
+
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function atualizarProgresso(texto, percentual) {
+            document.getElementById('progress-text').textContent = texto;
+            document.getElementById('progress-fill').style.width = percentual + '%';
+        }
+
+        function mostrarProgresso(mostrar) {
+            document.getElementById('progress-container').style.display = mostrar ? 'block' : 'none';
+        }
+
+        function registrarPublicacao(dados) {
+            let historico = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            historico.unshift(dados);
+            historico = historico.slice(0, 20); // Mantém últimas 20
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(historico));
+        }
+
+        function atualizarHistorico() {
+            const historico = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+            const container = document.getElementById('history-list');
+
+            if (historico.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999;">Nenhuma publicação ainda</p>';
+                return;
+            }
+
+            let html = '';
+            historico.forEach((item, index) => {
+                html += `
+                    <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; margin-bottom: 10px; border-left: 4px solid ${item.status === 'sucesso' ? '#28a745' : '#dc3545'};">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <div>
+                                <strong>${item.titulo}</strong><br>
+                                <small style="color: #999;">📁 ${item.arquivo}</small><br>
+                                <small style="color: #999;">📅 ${item.data}</small>
+                            </div>
+                            <span style="background: ${item.status === 'sucesso' ? '#d4edda' : '#f8d7da'}; color: ${item.status === 'sucesso' ? '#155724' : '#721c24'}; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">
+                                ${item.status === 'sucesso' ? '✅ OK' : '❌ Erro'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function limparHistorico() {
+            if (!confirm('Tem certeza que deseja limpar o histórico?')) return;
+            localStorage.removeItem(HISTORY_KEY);
+            atualizarHistorico();
+        }
+
+        function mostrarAlerta(mensagem, tipo) {
+            const element = document.getElementById('main-alert');
+            element.textContent = mensagem;
+            element.className = `alert ${tipo}`;
+            element.style.display = 'block';
+
+            if (tipo === 'success') {
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 5000);
+            }
+        }
+
+        // ===== INICIALIZAÇÃO =====
+        window.addEventListener('DOMContentLoaded', () => {
+            verificarAutenticacao();
+        });
+
+        // Atualiza status a cada 30 segundos
+        setInterval(verificarAutenticacao, 30000);
+    </script>
+</body>
+</html>

@@ -3,82 +3,721 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login com TikTok</title>
+    <title>TikTok OAuth - Autenticação</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f8f8f8;
+            padding: 20px;
         }
-        .login-container {
-            text-align: center;
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             padding: 40px;
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
         }
-        .tiktok-btn {
-            display: inline-flex;
-            align-items: center;
-            background-color: #000000;
-            color: #ffffff;
-            text-decoration: none;
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .logo {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        button {
+            flex: 1;
             padding: 12px 24px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: background-color 0.2s;
-            cursor: pointer;
             border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        .tiktok-btn:hover {
-            background-color: #25f4ee;
-            color: #000000;
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .alert {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .token-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .token-display h3 {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .token-item {
+            margin-bottom: 10px;
+            font-size: 12px;
+        }
+
+        .token-item label {
+            margin: 0;
+            color: #666;
+            font-weight: 500;
+        }
+
+        .token-value {
+            background: white;
+            padding: 8px;
+            border-radius: 4px;
+            margin-top: 4px;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #333;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .copy-btn:hover {
+            background: #764ba2;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-weight: 500;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-badge.connected {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.disconnected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .json-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin-top: 15px;
+            display: none;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e0e0e0;
+            margin: 20px 0;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🎵</div>
+            <h1>TikTok OAuth</h1>
+            <p>Autentique sua conta para publicar vídeos</p>
+        </div>
 
-    <div class="login-container">
-        <h2>Conecte sua Conta</h2>
-        <p>Clique no botão abaixo para autorizar o acesso com o TikTok.</p>
-        
-        <!-- Botão que dispara a função de redirecionamento -->
-        <button class="tiktok-btn" onclick="redirecionarParaTikTok()">
-            Entrar com o TikTok
-        </button>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('authenticate')">🔐 Autenticar</button>
+            <button class="tab-btn" onclick="switchTab('tokens')">🔑 Meus Tokens</button>
+            <button class="tab-btn" onclick="switchTab('config')">⚙️ Configuração</button>
+        </div>
+
+        <!-- TAB 1: AUTENTICAÇÃO -->
+        <div id="authenticate" class="tab-content active">
+            <div id="auth-alert" class="alert"></div>
+
+            <div class="form-group">
+                <label>Nome da Conta TikTok</label>
+                <input type="text" id="accountName" placeholder="Ex: MinhaContaTikTok" value="MinhaContaTikTok">
+            </div>
+
+            <div class="form-group">
+                <label>Client Key</label>
+                <input type="text" id="clientKey" placeholder="Seu TikTok Client Key" value="">
+            </div>
+
+            <div class="form-group">
+                <label>Client Secret</label>
+                <input type="password" id="clientSecret" placeholder="Seu TikTok Client Secret" value="">
+            </div>
+
+            <div class="form-group">
+                <label>Redirect URI</label>
+                <input type="text" id="redirectUri" placeholder="http://localhost:8080/" value="https://consultoriakicandi-web.github.io/urls/">
+            </div>
+
+            <button class="btn-primary" onclick="iniciarAutenticacao()">
+                🌍 Iniciar Autenticação
+            </button>
+
+            <p style="font-size: 12px; color: #999; margin-top: 15px; text-align: center;">
+                📋 Você será redirecionado ao TikTok para autorizar
+            </p>
+        </div>
+
+        <!-- TAB 2: MEUS TOKENS -->
+        <div id="tokens" class="tab-content">
+            <div id="tokens-alert" class="alert"></div>
+
+            <div id="token-list"></div>
+
+            <div class="button-group" style="margin-top: 20px;">
+                <button class="btn-secondary" onclick="exportarJSON()">📥 Exportar JSON</button>
+                <button class="btn-secondary" onclick="limparTokens()">🗑️ Limpar Tudo</button>
+            </div>
+
+            <div id="json-output" class="json-output"></div>
+        </div>
+
+        <!-- TAB 3: CONFIGURAÇÃO -->
+        <div id="config" class="tab-content">
+            <h3 style="margin-bottom: 15px;">📝 Configuração</h3>
+
+            <div class="form-group">
+                <label>TikTok Client Key</label>
+                <input type="text" id="configClientKey" placeholder="Cole aqui seu Client Key">
+                <small style="color: #999; margin-top: 5px; display: block;">
+                    Obtenha em: https://developer.tiktok.com/
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>TikTok Client Secret</label>
+                <input type="password" id="configClientSecret" placeholder="Cole aqui seu Client Secret">
+            </div>
+
+            <button class="btn-primary" onclick="salvarConfiguracao()">✅ Salvar Configuração</button>
+
+            <div class="divider"></div>
+
+            <h3 style="margin-bottom: 15px;">🔗 Informações de Integração</h3>
+
+            <div class="form-group">
+                <label>Seu Redirect URI</label>
+                <div style="background: #f8f9fa; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all;">
+                    https://consultoriakicandi-web.github.io/urls/
+                </div>
+                <button class="copy-btn" onclick="copiarTexto('https://consultoriakicandi-web.github.io/urls/')" style="margin-top: 8px;">Copiar</button>
+            </div>
+
+            <div style="background: #d1ecf1; border: 1px solid #bee5eb; border-radius: 6px; padding: 15px; margin-top: 20px; font-size: 12px; color: #0c5460;">
+                <strong>💡 Dica:</strong> Configure este URL no painel do TikTok Developer como "Redirect URI"
+            </div>
+        </div>
+
+        <div id="status" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0; text-align: center; color: #999; font-size: 12px;">
+            📊 Local Storage: <span id="storageStatus">Vazio</span>
+        </div>
     </div>
 
     <script>
-        function redirecionarParaTikTok() {
-            // Substitua 'SEU_CLIENT_KEY_AQUI' pela chave gerada no painel do TikTok
-            const clientKey = 'sbawhaw2joxsv5sex6'; 
-            
-            // Substitua pela URL exata cadastrada nas configurações do seu app no TikTok
-            const redirectUri = 'https://github.io'; 
-            
-            // Defina as permissões que o seu aplicativo vai solicitar
-            const scope = 'user.info.basic,video.list,video.publish,video.upload'; 
-            
-            // String aleatória de segurança para evitar ataques CSRF
-            const state = Math.random().toString(36).substring(2, 15); 
+        // ===== CONFIGURAÇÃO =====
+        const TIKTOK_AUTH_URL = "https://www.tiktok.com/v2/auth/authorize/";
+        const TIKTOK_TOKEN_URL = "https://open.tiktokapis.com/v2/oauth/token/";
+        const REDIRECT_URI = "https://consultoriakicandi-web.github.io/urls/";
+        const STORAGE_KEY = "tiktok_tokens";
+        const CONFIG_KEY = "tiktok_config";
 
-            // Construção da URL oficial de autorização (V2)
-            const tiktokAuthUrl = `https://www.tiktok.com/v2/auth/authorize/` +
-                                  `?client_key=${clientKey}` +
-                                  `&response_type=code` +
-                                  `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-                                  `&scope=${scope}` +
-                                  `&state=${state}`;
+        // ===== FUNÇÕES PRINCIPAIS =====
 
-            // Redireciona o navegador do usuário para a página de login do TikTok
-            window.location.href = tiktokAuthUrl;
+        function switchTab(tabName) {
+            // Remove active de todos
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+            // Ativa o selecionado
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // Atualiza lista se for tokens
+            if (tabName === 'tokens') {
+                atualizarListaTokens();
+            }
+            if (tabName === 'config') {
+                carregarConfiguracao();
+            }
         }
-    </script>
 
+        function iniciarAutenticacao() {
+            const accountName = document.getElementById('accountName').value;
+            const clientKey = document.getElementById('clientKey').value;
+            const clientSecret = document.getElementById('clientSecret').value;
+
+            if (!accountName || !clientKey || !clientSecret) {
+                mostrarAlerta('auth-alert', 'Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            // Salva config temporária
+            localStorage.setItem(CONFIG_KEY, JSON.stringify({
+                clientKey,
+                clientSecret
+            }));
+
+            // Monta URL de autenticação
+            const params = new URLSearchParams({
+                client_key: clientKey,
+                scope: "user.info.basic,video.publish,video.upload",
+                response_type: "code",
+                redirect_uri: REDIRECT_URI,
+                state: "seguranca123_" + Date.now()
+            });
+
+            const authUrl = `${TIKTOK_AUTH_URL}?${params.toString()}`;
+
+            mostrarAlerta('auth-alert', '🌍 Redirecionando para TikTok...', 'info');
+            
+            // Salva dados temporários da autenticação
+            sessionStorage.setItem('pending_auth', JSON.stringify({
+                accountName,
+                timestamp: Date.now()
+            }));
+
+            // Redireciona
+            window.location.href = authUrl;
+        }
+
+        function processarCallbackOAuth() {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get('code');
+            const error = params.get('error');
+
+            if (error) {
+                mostrarAlerta('auth-alert', `❌ Erro: ${error}`, 'error');
+                return;
+            }
+
+            if (code) {
+                mostrarAlerta('auth-alert', '⏳ Processando autenticação...', 'info');
+                trocarCodigoPorToken(code);
+                
+                // Limpa URL
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        async function trocarCodigoPorToken(code) {
+            try {
+                const config = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}');
+                const authData = JSON.parse(sessionStorage.getItem('pending_auth') || '{}');
+
+                if (!config.clientKey || !config.clientSecret) {
+                    mostrarAlerta('auth-alert', '❌ Configuração não encontrada. Tente novamente.', 'error');
+                    return;
+                }
+
+                const data = new URLSearchParams({
+                    client_key: config.clientKey,
+                    client_secret: config.clientSecret,
+                    code: code,
+                    grant_type: "authorization_code",
+                    redirect_uri: REDIRECT_URI
+                });
+
+                mostrarAlerta('auth-alert', '🔄 Trocando código por token...', 'info');
+
+                const response = await fetch(TIKTOK_TOKEN_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: data.toString()
+                });
+
+                const responseData = await response.json();
+
+                if (response.ok && responseData.access_token) {
+                    const tokenData = {
+                        account_name: authData.accountName || "MinhaContaTikTok",
+                        access_token: responseData.access_token,
+                        refresh_token: responseData.refresh_token || "",
+                        expires_in: responseData.expires_in || 86400,
+                        expires_at: new Date(Date.now() + (responseData.expires_in || 86400) * 1000).toISOString(),
+                        token_type: responseData.token_type || "bearer",
+                        created_at: new Date().toISOString()
+                    };
+
+                    // Salva token
+                    salvarToken(tokenData);
+
+                    mostrarAlerta('auth-alert', `✅ Autenticação bem-sucedida! Token salvo para ${tokenData.account_name}`, 'success');
+
+                    // Limpa dados temporários
+                    sessionStorage.removeItem('pending_auth');
+
+                    // Vai para aba de tokens
+                    setTimeout(() => {
+                        document.querySelector('[onclick="switchTab(\'tokens\')"]').click();
+                    }, 1500);
+                } else {
+                    const erro = responseData.error_description || responseData.error || 'Erro desconhecido';
+                    mostrarAlerta('auth-alert', `❌ Erro do TikTok: ${erro}`, 'error');
+                }
+            } catch (error) {
+                mostrarAlerta('auth-alert', `❌ Erro: ${error.message}`, 'error');
+                console.error('Erro:', error);
+            }
+        }
+
+        function salvarToken(tokenData) {
+            let tokens = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            
+            // Remove token antigo da mesma conta se existir
+            tokens = tokens.filter(t => t.account_name !== tokenData.account_name);
+            
+            // Adiciona novo
+            tokens.push(tokenData);
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tokens));
+            atualizarStatus();
+        }
+
+        function atualizarListaTokens() {
+            const tokens = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const container = document.getElementById('token-list');
+
+            if (tokens.length === 0) {
+                container.innerHTML = '<div class="alert info">Nenhum token salvo. <a href="javascript:switchTab(\'authenticate\')" style="font-weight: bold;">Autentique agora</a></div>';
+                return;
+            }
+
+            let html = '';
+            tokens.forEach((token, index) => {
+                const expiraEm = new Date(token.expires_at);
+                const agora = new Date();
+                const expirado = expiraEm < agora;
+
+                html += `
+                    <div class="token-display" style="display: block;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <h3>👤 ${token.account_name}</h3>
+                            <span class="status-badge ${expirado ? 'disconnected' : 'connected'}">
+                                ${expirado ? '⚠️ Expirado' : '✅ Válido'}
+                            </span>
+                        </div>
+
+                        <div class="token-item">
+                            <label>Access Token</label>
+                            <div style="display: flex; gap: 8px;">
+                                <div class="token-value" style="flex: 1; overflow: hidden; text-overflow: ellipsis;">
+                                    ${token.access_token}
+                                </div>
+                                <button class="copy-btn" onclick="copiarTexto('${token.access_token}')">📋</button>
+                            </div>
+                        </div>
+
+                        <div class="token-item">
+                            <label>Refresh Token</label>
+                            <div style="display: flex; gap: 8px;">
+                                <div class="token-value" style="flex: 1; overflow: hidden; text-overflow: ellipsis;">
+                                    ${token.refresh_token || '(não disponível)'}
+                                </div>
+                                <button class="copy-btn" onclick="copiarTexto('${token.refresh_token || ''}')">📋</button>
+                            </div>
+                        </div>
+
+                        <div class="token-item">
+                            <label>Expira em</label>
+                            <div class="token-value">${new Date(token.expires_at).toLocaleString('pt-BR')}</div>
+                        </div>
+
+                        <div class="token-item">
+                            <label>Criado em</label>
+                            <div class="token-value">${new Date(token.created_at).toLocaleString('pt-BR')}</div>
+                        </div>
+
+                        <button class="btn-secondary" onclick="deletarToken('${token.account_name}')" style="width: 100%; margin-top: 10px;">
+                            🗑️ Deletar Token
+                        </button>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function deletarToken(accountName) {
+            if (!confirm(`Tem certeza que deseja deletar o token de ${accountName}?`)) {
+                return;
+            }
+
+            let tokens = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            tokens = tokens.filter(t => t.account_name !== accountName);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(tokens));
+
+            atualizarListaTokens();
+            mostrarAlerta('tokens-alert', `✅ Token de ${accountName} deletado`, 'success');
+            atualizarStatus();
+        }
+
+        function limparTokens() {
+            if (!confirm('Tem certeza que deseja deletar TODOS os tokens?')) {
+                return;
+            }
+
+            localStorage.removeItem(STORAGE_KEY);
+            atualizarListaTokens();
+            mostrarAlerta('tokens-alert', '✅ Todos os tokens foram deletados', 'success');
+            atualizarStatus();
+        }
+
+        function exportarJSON() {
+            const tokens = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+            if (tokens.length === 0) {
+                mostrarAlerta('tokens-alert', '❌ Nenhum token para exportar', 'error');
+                return;
+            }
+
+            const jsonOutput = document.getElementById('json-output');
+            jsonOutput.textContent = JSON.stringify(tokens, null, 2);
+            jsonOutput.style.display = 'block';
+
+            // Download
+            const dataStr = JSON.stringify(tokens, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `tiktok_tokens_${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+
+            mostrarAlerta('tokens-alert', '✅ JSON exportado e baixado', 'success');
+        }
+
+        function salvarConfiguracao() {
+            const clientKey = document.getElementById('configClientKey').value;
+            const clientSecret = document.getElementById('configClientSecret').value;
+
+            if (!clientKey || !clientSecret) {
+                mostrarAlerta('auth-alert', 'Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            localStorage.setItem(CONFIG_KEY, JSON.stringify({
+                clientKey,
+                clientSecret
+            }));
+
+            // Atualiza campos da aba de autenticação
+            document.getElementById('clientKey').value = clientKey;
+            document.getElementById('clientSecret').value = clientSecret;
+
+            mostrarAlerta('tokens-alert', '✅ Configuração salva com sucesso', 'success');
+        }
+
+        function carregarConfiguracao() {
+            const config = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}');
+            document.getElementById('configClientKey').value = config.clientKey || '';
+            document.getElementById('configClientSecret').value = config.clientSecret || '';
+        }
+
+        function copiarTexto(texto) {
+            navigator.clipboard.writeText(texto).then(() => {
+                alert('✅ Copiado!');
+            });
+        }
+
+        function mostrarAlerta(elementId, mensagem, tipo) {
+            const element = document.getElementById(elementId);
+            element.textContent = mensagem;
+            element.className = `alert ${tipo}`;
+        }
+
+        function atualizarStatus() {
+            const tokens = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+            const status = tokens.length > 0 ? `${tokens.length} token(s)` : 'Vazio';
+            document.getElementById('storageStatus').textContent = status;
+        }
+
+        // ===== INICIALIZAÇÃO =====
+        window.addEventListener('DOMContentLoaded', () => {
+            // Processa callback OAuth se existir
+            processarCallbackOAuth();
+
+            // Carrega configuração salva
+            carregarConfiguracao();
+
+            // Atualiza status
+            atualizarStatus();
+        });
+    </script>
 </body>
 </html>
