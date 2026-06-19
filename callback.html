@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retorno do TikTok</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 450px;
+        }
+        .code-box {
+            background: #222;
+            color: #00ffcc;
+            padding: 10px;
+            font-family: monospace;
+            border-radius: 4px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2 id="status-title">Processando Autenticação...</h2>
+        <p id="status-desc">Aguardando resposta dos servidores do TikTok.</p>
+        <div id="result-container" style="display: none;">
+            <p>Seu código temporário de autorização é:</p>
+            <div id="code-output" class="code-box"></div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // 1. Pega os parâmetros contidos na URL (?code=... ou ?error=...)
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            const error = urlParams.get('error');
+            const errorDesc = urlParams.get('error_description');
+
+            const title = document.getElementById('status-title');
+            const desc = document.getElementById('status-desc');
+            const resultContainer = document.getElementById('result-container');
+            const codeOutput = document.getElementById('code-output');
+
+            // 2. Verifica se o usuário recusou ou se deu erro
+            if (error) {
+                title.innerText = "Falha na Autorização";
+                title.style.color = "#ff4d4d";
+                desc.innerText = errorDesc || error;
+                return;
+            }
+
+            // 3. Se o código foi capturado com sucesso
+            if (code) {
+                title.innerText = "Sucesso!";
+                title.style.color = "#00b37e";
+                desc.innerHTML = "O GitHub Pages capturou seu código temporário da URL.<br><small style='color:red;'>Aviso: Não use o CLIENT_SECRET aqui no frontend para não expor suas credenciais.</small>";
+                
+                // Exibe o código na tela
+                resultContainer.style.display = "block";
+                codeOutput.innerText = code;
+            } else {
+                title.innerText = "Nenhum dado recebido";
+                desc.innerText = "A URL não continha um código de autorização válido do TikTok.";
+            }
+        };
+    </script>
+
+</body>
+</html>
