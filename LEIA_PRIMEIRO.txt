@@ -1,0 +1,74 @@
+╔══════════════════════════════════════════════════════════════════╗
+║  🧪 TIKTOK OAUTH - APP EM MODO TESTE                            ║
+║  Como Funciona e O Que Fazer                                    ║
+╚══════════════════════════════════════════════════════════════════╝
+
+📍 VOCÊ ESTÁ AQUI:
+   Sua app TikTok está em MODO TESTE
+   O OAuth automático NÃO funciona (é bloqueado pelo TikTok)
+   MAS você pode continuar publicando de forma manual!
+
+═══════════════════════════════════════════════════════════════════
+
+✅ SOLUÇÃO RÁPIDA (RECOMENDADA):
+
+1️⃣  Abra: https://developer.tiktok.com/apps/
+2️⃣  Vá em: Tools → Access Token Generator
+3️⃣  Clique: "Generate token"
+4️⃣  Copie: O token que apareceu (começa com v1_...)
+5️⃣  Abra: https://consultoriakicandi-web.github.io/urls/index_test_mode.html
+6️⃣  Cole: O token na página
+7️⃣  Pronto! ✅
+
+═══════════════════════════════════════════════════════════════════
+
+📁 ARQUIVOS PARA USAR:
+
+Para Modo Teste:
+  └─ index_test_mode.html     ← USE ESTE (copia token manualmente)
+  └─ publish.html              ← Publicar vídeos
+
+Para Quando Sair do Teste:
+  └─ index.html                ← OAuth automático
+
+Documentação:
+  └─ MODO_TESTE_GUIA.md        ← Leia tudo sobre isso
+  └─ README.md                 ← Setup completo
+
+═══════════════════════════════════════════════════════════════════
+
+🚀 FLUXO ATUAL:
+
+1. Gerar Token no TikTok Dev
+   ↓
+2. Salvar em index_test_mode.html
+   ↓
+3. Publicar em publish.html
+   ↓
+4. Vídeo no ar!
+
+═══════════════════════════════════════════════════════════════════
+
+⏰ LEMBRETE IMPORTANTE:
+
+- Token EXPIRA em 24H
+- Você precisará gerar um novo amanhã
+- Depois de sair do modo teste, tudo fica automático
+
+═══════════════════════════════════════════════════════════════════
+
+📋 PRÓXIMAS AÇÕES:
+
+[ ] Ler: MODO_TESTE_GUIA.md (para entender tudo)
+[ ] Abrir: index_test_mode.html (no navegador)
+[ ] Gerar: Token no TikTok Developer
+[ ] Salvar: Token na página
+[ ] Testar: Publicar um vídeo com publish.html
+
+═══════════════════════════════════════════════════════════════════
+
+❓ DÚVIDAS?
+
+Veja a aba "📖 Como Funciona" em index_test_mode.html
+
+═══════════════════════════════════════════════════════════════════
