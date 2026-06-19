@@ -1,4 +1,84 @@
-<h1>Meu App Pipeline
-<a href="red.html" >
-</h1>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login com TikTok</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f8f8;
+        }
+        .login-container {
+            text-align: center;
+            padding: 40px;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .tiktok-btn {
+            display: inline-flex;
+            align-items: center;
+            background-color: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        .tiktok-btn:hover {
+            background-color: #25f4ee;
+            color: #000000;
+        }
+    </style>
+</head>
+<body>
 
+    <div class="login-container">
+        <h2>Conecte sua Conta</h2>
+        <p>Clique no botão abaixo para autorizar o acesso com o TikTok.</p>
+        
+        <!-- Botão que dispara a função de redirecionamento -->
+        <button class="tiktok-btn" onclick="redirecionarParaTikTok()">
+            Entrar com o TikTok
+        </button>
+    </div>
+
+    <script>
+        function redirecionarParaTikTok() {
+            // Substitua 'SEU_CLIENT_KEY_AQUI' pela chave gerada no painel do TikTok
+            const clientKey = 'SEU_CLIENT_KEY_AQUI'; 
+            
+            // Substitua pela URL exata cadastrada nas configurações do seu app no TikTok
+            const redirectUri = 'https://seusite.com'; 
+            
+            // Defina as permissões que o seu aplicativo vai solicitar
+            const scope = 'user.info.basic,video.list'; 
+            
+            // String aleatória de segurança para evitar ataques CSRF
+            const state = Math.random().toString(36).substring(2, 15); 
+
+            // Construção da URL oficial de autorização (V2)
+            const tiktokAuthUrl = `https://tiktok.com` +
+                                  `?client_key=${clientKey}` +
+                                  `&response_type=code` +
+                                  `&redirect_uri=${encodeURIComponent(redirectUri)}` +
+                                  `&scope=${scope}` +
+                                  `&state=${state}`;
+
+            // Redireciona o navegador do usuário para a página de login do TikTok
+            window.location.href = tiktokAuthUrl;
+        }
+    </script>
+
+</body>
+</html>
